@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class Vehicle : MonoBehaviour {
     Rigidbody rigidBody;
-
+    AudioSource audioSource;
     void Start() {
         rigidBody = GetComponent<Rigidbody>();
+        audioSource = GetComponent<AudioSource>();
     }
 
     void Update() {
@@ -14,13 +15,18 @@ public class Vehicle : MonoBehaviour {
     }
 
     void ProcessInput() {
-        if (Input.GetKey(KeyCode.Space)) {
-            rigidBody.AddRelativeForce(Vector3.up);
-        }
         if (Input.GetKey(KeyCode.A)) {
             transform.Rotate(Vector3.forward);
         } else if (Input.GetKey(KeyCode.D)) {
             transform.Rotate(Vector3.back);
+        }
+
+        if (Input.GetKey(KeyCode.Space)) {
+            rigidBody.AddRelativeForce(Vector3.up);
+            if (!audioSource.isPlaying)
+                audioSource.Play();
+        } else {
+            audioSource.Stop();
         }
     }
 }
