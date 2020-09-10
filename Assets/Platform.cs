@@ -15,10 +15,13 @@ public class Platform : MonoBehaviour {
     Material inactive;
     [SerializeField]
     Material completed;
+    [SerializeField]
+    AudioClip platformActivatedSound;
 
-    PlatformState state = PlatformState.inactive;
+    AudioSource audioSource;
+    public PlatformState state = PlatformState.inactive;
     void Start() {
-
+        audioSource = GetComponent<AudioSource>();
     }
 
     void Update() {
@@ -48,7 +51,7 @@ public class Platform : MonoBehaviour {
         if (state == PlatformState.active) {
             state = PlatformState.completed;
             setMaterialFoState(state);
-            GameManager.instance.platformReached();
+            audioSource.PlayOneShot(platformActivatedSound);
         }
         
     }

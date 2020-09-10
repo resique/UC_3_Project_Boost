@@ -1,21 +1,39 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using System.Linq;
+public enum GameState
+{
+	active,
+	diying,
+	transcending,
+}
 
 public class Vehicle : MonoBehaviour {
     [SerializeField]
     float thrustSpeed = 100f;
-
+    [SerializeField]
+    AudioClip mainEngineSound;
+    [SerializeField]
+    AudioClip crashSound;
     Rigidbody rigidBody;
     AudioSource audioSource;
     bool isOnTheGround = false;
-    void Start() {
+	List<GameObject> platforms;
+	GameState gameState = GameState.active;
+	int currentPlatformIndex;
+	GameObject currentPlatform;
+
+	void Start() {
         rigidBody = GetComponent<Rigidbody>();
         audioSource = GetComponent<AudioSource>();
-    }
+		platforms = GameObject.FindGameObjectsWithTag("Platform").ToList();
+		assignNewCurrentPlatfrom();
+	}
 
     void Update() {
-        if (GameManager.instance.gameState == GameState.diying) {
+        if (gameState == GameState.diying) {
             return;
         }
         Thrust();
@@ -43,23 +61,49 @@ public class Vehicle : MonoBehaviour {
         rigidBody.freezeRotation = false;
     }
 
-    private void Thrust() {
+	public void platformReached()
+	{
+		platforms.RemoveAt(currentPlatformIndex);
+		assignNewCurrentPlatfrom();
+	}
+
+	private void assignNewCurrentPlatfrom()
+	{
+		if (platforms.Count == 0)
+		{
+			currentPlatform = null;
+			return;
+		}
+		currentPlatformIndex = Random.Range(0, platforms.Count);
+		currentPlatform = platforms[currentPlatformIndex];
+		currentPlatform.GetComponent<Platform>().switchState(PlatformState.active);
+	}
+
+	private void Thrust() {
         if (Input.GetKey(KeyCode.Space)) {
             rigidBody.AddRelativeForce(Vector3.up * thrustSpeed * Time.deltaTime);
-            if (!audioSource.isPlaying)
-                audioSource.Play();
+            if (!audioSource.isPlaying) {
+                audioSource.PlayOneShot(mainEngineSound);
+            } 
         } else {
             audioSource.Stop();
         }
     }
 
     private void OnCollisionEnter(Collision collision) {
+        if (gameState != GameState.active) return;
+
         switch (collision.gameObject.tag) {
             case "Platform":
-                print("PLATFORM");
+                if (collision.gameObject.GetComponent<Platform>().state == PlatformState.active) {
+                    platformReached();
+                }
                 break;
             case "Ground":
-                GameManager.instance.gameState = GameState.diying;
+				gameState = GameState.diying;
+                audioSource.Stop();
+                audioSource.PlayOneShot(crashSound);
+                Invoke("OnDie", 1.0f);
                 break;
         }
     }
@@ -70,5 +114,10 @@ public class Vehicle : MonoBehaviour {
 
     private void OnCollisionExit(Collision collision) {
         isOnTheGround = false;
+    }
+
+    private void OnDie() {
+		gameState = GameState.active;
+		SceneManager.LoadScene(0);
     }
 }
