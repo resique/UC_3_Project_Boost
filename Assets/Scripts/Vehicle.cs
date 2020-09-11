@@ -14,6 +14,8 @@ public class Vehicle : MonoBehaviour {
     [SerializeField]
     float thrustSpeed = 100f;
     [SerializeField]
+    float rotationSpeed = 50f;
+    [SerializeField]
     AudioClip mainEngineSound;
     [SerializeField]
     AudioClip crashSound;
@@ -44,19 +46,19 @@ public class Vehicle : MonoBehaviour {
         if (isOnTheGround) return;
         rigidBody.freezeRotation = true;
         if (Input.GetKey(KeyCode.LeftArrow)) {
-            transform.Rotate(Vector3.forward);
+            transform.Rotate(Vector3.forward * rotationSpeed * Time.deltaTime);
         } else if (Input.GetKey(KeyCode.RightArrow)) {
-            transform.Rotate(Vector3.back);
+            transform.Rotate(Vector3.back * rotationSpeed * Time.deltaTime);
         } else if (Input.GetKey(KeyCode.UpArrow)) {
-            transform.Rotate(Vector3.right);
+            transform.Rotate(Vector3.right * rotationSpeed * Time.deltaTime);
         } else if (Input.GetKey(KeyCode.DownArrow)) {
-            transform.Rotate(Vector3.left);
+            transform.Rotate(Vector3.left * rotationSpeed * Time.deltaTime);
         }
 
         if (Input.GetKey(KeyCode.D)) {
-            transform.Rotate(Vector3.up);
+            transform.Rotate(Vector3.up * rotationSpeed * Time.deltaTime);
         } else if (Input.GetKey(KeyCode.A)) {
-            transform.Rotate(Vector3.down);
+            transform.Rotate(Vector3.down * rotationSpeed * Time.deltaTime);
         }
         rigidBody.freezeRotation = false;
     }
