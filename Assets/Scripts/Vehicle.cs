@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Linq;
-public enum GameState
-{
-	active,
-	diying,
-	transcending,
+public enum GameState {
+    active,
+    diying,
+    transcending,
 }
 
 public class Vehicle : MonoBehaviour {
@@ -19,20 +18,23 @@ public class Vehicle : MonoBehaviour {
     AudioClip mainEngineSound;
     [SerializeField]
     AudioClip crashSound;
+    [SerializeField]
+    ParticleSystem crashFx;
+
     Rigidbody rigidBody;
     AudioSource audioSource;
     bool isOnTheGround = false;
-	List<GameObject> platforms;
-	GameState gameState = GameState.active;
-	int currentPlatformIndex;
-	GameObject currentPlatform;
+    List<GameObject> platforms;
+    GameState gameState = GameState.active;
+    int currentPlatformIndex;
+    GameObject currentPlatform;
 
-	void Start() {
+    void Start() {
         rigidBody = GetComponent<Rigidbody>();
         audioSource = GetComponent<AudioSource>();
-		platforms = GameObject.FindGameObjectsWithTag("Platform").ToList();
-		assignNewCurrentPlatfrom();
-	}
+        platforms = GameObject.FindGameObjectsWithTag("Platform").ToList();
+        assignNewCurrentPlatfrom();
+    }
 
     void Update() {
         if (gameState == GameState.diying) {
@@ -45,48 +47,46 @@ public class Vehicle : MonoBehaviour {
     void Rotate() {
         if (isOnTheGround) return;
         rigidBody.freezeRotation = true;
+        float speed = rotationSpeed * Time.deltaTime;
         if (Input.GetKey(KeyCode.LeftArrow)) {
-            transform.Rotate(Vector3.forward * rotationSpeed * Time.deltaTime);
+            transform.Rotate(Vector3.forward * speed);
         } else if (Input.GetKey(KeyCode.RightArrow)) {
-            transform.Rotate(Vector3.back * rotationSpeed * Time.deltaTime);
+            transform.Rotate(Vector3.back * speed);
         } else if (Input.GetKey(KeyCode.UpArrow)) {
-            transform.Rotate(Vector3.right * rotationSpeed * Time.deltaTime);
+            transform.Rotate(Vector3.right * speed);
         } else if (Input.GetKey(KeyCode.DownArrow)) {
-            transform.Rotate(Vector3.left * rotationSpeed * Time.deltaTime);
+            transform.Rotate(Vector3.left * speed);
         }
 
         if (Input.GetKey(KeyCode.D)) {
-            transform.Rotate(Vector3.up * rotationSpeed * Time.deltaTime);
+            transform.Rotate(Vector3.up * speed);
         } else if (Input.GetKey(KeyCode.A)) {
-            transform.Rotate(Vector3.down * rotationSpeed * Time.deltaTime);
+            transform.Rotate(Vector3.down * speed);
         }
         rigidBody.freezeRotation = false;
     }
 
-	public void platformReached()
-	{
-		platforms.RemoveAt(currentPlatformIndex);
-		assignNewCurrentPlatfrom();
-	}
+    public void platformReached() {
+        platforms.RemoveAt(currentPlatformIndex);
+        assignNewCurrentPlatfrom();
+    }
 
-	private void assignNewCurrentPlatfrom()
-	{
-		if (platforms.Count == 0)
-		{
-			currentPlatform = null;
-			return;
-		}
-		currentPlatformIndex = Random.Range(0, platforms.Count);
-		currentPlatform = platforms[currentPlatformIndex];
-		currentPlatform.GetComponent<Platform>().switchState(PlatformState.active);
-	}
+    private void assignNewCurrentPlatfrom() {
+        if (platforms.Count == 0) {
+            currentPlatform = null;
+            return;
+        }
+        currentPlatformIndex = Random.Range(0, platforms.Count);
+        currentPlatform = platforms[currentPlatformIndex];
+        currentPlatform.GetComponent<Platform>().switchState(PlatformState.active);
+    }
 
-	private void Thrust() {
+    private void Thrust() {
         if (Input.GetKey(KeyCode.Space)) {
             rigidBody.AddRelativeForce(Vector3.up * thrustSpeed * Time.deltaTime);
             if (!audioSource.isPlaying) {
                 audioSource.PlayOneShot(mainEngineSound);
-            } 
+            }
         } else {
             audioSource.Stop();
         }
@@ -102,9 +102,10 @@ public class Vehicle : MonoBehaviour {
                 }
                 break;
             case "Ground":
-				gameState = GameState.diying;
+                gameState = GameState.diying;
                 audioSource.Stop();
                 audioSource.PlayOneShot(crashSound);
+                crashFx.Play();
                 Invoke("OnDie", 1.0f);
                 break;
         }
@@ -119,7 +120,7 @@ public class Vehicle : MonoBehaviour {
     }
 
     private void OnDie() {
-		gameState = GameState.active;
-		SceneManager.LoadScene(0);
+        gameState = GameState.active;
+        SceneManager.LoadScene(0);
     }
 }

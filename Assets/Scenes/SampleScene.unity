@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.4366999, g: 0.4842986, b: 0.5645497, a: 1}
+  m_IndirectSpecularColor: {r: 0.43670005, g: 0.48429883, b: 0.56455016, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -265,6 +265,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7f65f40fb1b774b4aaf4632e3d2b137f, type: 3}
+--- !u!198 &559356652 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 6067765316968602584, guid: a0a44cfefa6556846823826cf23a25ba,
+    type: 3}
+  m_PrefabInstance: {fileID: 638041057}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &638041057
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -272,26 +278,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 631285496, guid: a0a44cfefa6556846823826cf23a25ba, type: 3}
-      propertyPath: m_PlayOnAwake
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 631285496, guid: a0a44cfefa6556846823826cf23a25ba, type: 3}
-      propertyPath: m_Volume
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 631285496, guid: a0a44cfefa6556846823826cf23a25ba, type: 3}
-      propertyPath: m_Pitch
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 631285496, guid: a0a44cfefa6556846823826cf23a25ba, type: 3}
-      propertyPath: Loop
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 631285496, guid: a0a44cfefa6556846823826cf23a25ba, type: 3}
-      propertyPath: m_audioClip
+    - target: {fileID: 657792132, guid: a0a44cfefa6556846823826cf23a25ba, type: 3}
+      propertyPath: crashFx
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 559356652}
     - target: {fileID: 2222133077191066044, guid: a0a44cfefa6556846823826cf23a25ba,
         type: 3}
       propertyPath: m_Name

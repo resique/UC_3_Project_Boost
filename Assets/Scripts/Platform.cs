@@ -17,6 +17,8 @@ public class Platform : MonoBehaviour {
     Material completed;
     [SerializeField]
     AudioClip platformActivatedSound;
+    [SerializeField]
+    ParticleSystem platformActivatedFx;
 
     AudioSource audioSource;
     public PlatformState state = PlatformState.inactive;
@@ -52,6 +54,7 @@ public class Platform : MonoBehaviour {
             state = PlatformState.completed;
             setMaterialFoState(state);
             audioSource.PlayOneShot(platformActivatedSound);
+            platformActivatedFx.Play();
         }
         
     }
