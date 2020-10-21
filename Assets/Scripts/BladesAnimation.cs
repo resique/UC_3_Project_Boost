@@ -6,7 +6,9 @@ public class BladesAnimation : MonoBehaviour {
     [SerializeField]
     Transform[] blades;
     [SerializeField]
-    float speed = 0;
+    AnimationCurve curve;
+    [SerializeField]
+    float speed = 1;
     [SerializeField]
     float maxSpeed = 1000;
     [SerializeField]
@@ -14,31 +16,22 @@ public class BladesAnimation : MonoBehaviour {
     [SerializeField]
     float speedIncrement = 200;
 
-    Rigidbody rigidBody;
-    float maxAltitude, minAltitude;
-
-    void Start() {
-        rigidBody = GetComponent<Rigidbody>();
-        maxAltitude = transform.position.y;
-        minAltitude = transform.position.y;
+    private void Start() {
+  
     }
 
     void Update() {
         if (Input.GetKey(KeyCode.Space)) {
-            if (speed < maxSpeed)
-                speed += speedIncrement * Time.deltaTime;
-            else
-                speed = maxSpeed;
+      
+                speed = maxSpeed * curve.Evaluate(Time.time * curve.length);
         } else {
-            if (speed > minSpeed)
-                speed -= speedIncrement * Time.deltaTime;
-            else
-                speed = minSpeed;
+          
+                speed = minSpeed * curve.Evaluate(Time.time * curve.length);
         }
 
         for (uint i = 0; i < blades.Length; i++) {
-            bool isEven = i % 2 == 0;
-            blades[i].Rotate((isEven ? Vector3.down : Vector3.up) * Time.deltaTime * speed);
+            bool isEven = (i + 1) % 2 == 0;
+            blades[i].Rotate((isEven ? Vector3.down : Vector3.up) * speed * Time.deltaTime);
         }
     }
 }

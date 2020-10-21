@@ -3,11 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Linq;
-public enum GameState {
-    active,
-    diying,
-    transcending,
-}
 
 public class Vehicle : MonoBehaviour {
     [SerializeField]
